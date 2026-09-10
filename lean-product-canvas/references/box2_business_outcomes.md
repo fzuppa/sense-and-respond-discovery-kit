@@ -36,6 +36,8 @@ Use these prompts to accelerate your discovery work, but always treat AI-generat
 
 # BOX 2: Business Outcomes
 
+> **Main canvas vs. problem canvas:** in the product's main canvas, these outcomes should be high-level/strategic — company- or product-wide metrics. In a problem canvas (one specific experiment), scope them to that problem instead.
+
 ## Key Definition
 
 **An outcome is "a measurable change in human behavior that creates value"**

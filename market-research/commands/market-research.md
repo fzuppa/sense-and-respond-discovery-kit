@@ -14,7 +14,7 @@ This command is part of the **Sense & Respond Product Discovery kit**. It serves
 1. **Opportunity name.** If `$ARGUMENTS` is empty, ask what it is before continuing.
 
 2. **Gather context on the opportunity** — with a scoped glob/grep, without exploring the whole filesystem:
-   - An `LPD $ARGUMENTS.md` file (Lean Product Canvas), if it exists, to pull the value proposition, users, and business problem.
+   - A `main-lean-product-canvas $ARGUMENTS.md` or `lean-product-canvas-$ARGUMENTS.md` file (Lean Product Canvas), if it exists, to pull the value proposition, users, and business problem.
    - Any prior research inside a folder named after the opportunity (e.g. `Projects/$ARGUMENTS/`), such as a testable-hypothesis note or other prior research.
    - If nothing is found, ask the person to describe in 2-3 lines: what the product/service does, for whom (customer/market type), and what geography it operates in.
 

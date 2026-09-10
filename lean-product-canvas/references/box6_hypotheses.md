@@ -36,6 +36,8 @@ Use these prompts to accelerate your discovery work, but always treat AI-generat
 
 # BOX 6: Hypotheses
 
+> **Main canvas vs. problem canvas:** in the product's main canvas, this is the overarching hypothesis for the whole product opportunity. In a problem canvas, it's the hypothesis for that specific experiment.
+
 ## Required Format
 
 ```

@@ -1,6 +1,6 @@
 # Lean Product Canvas (Claude Code skill)
 
-Skill for filling in, selecting between options for, and reviewing the 8 boxes of the [Lean Product Canvas](https://jeffgothelf.com/blog/the-lean-product-canvas/) by talking to Claude — no copy-pasting prompts by hand. Results are saved to an `LPD <Opportunity>.md` file inside the project.
+Skill for filling in, selecting between options for, and reviewing the 8 boxes of the [Lean Product Canvas](https://jeffgothelf.com/blog/the-lean-product-canvas/) by talking to Claude — no copy-pasting prompts by hand. It manages two related artifacts per product: a single **main canvas** (`main-lean-product-canvas <Product>.md`) and any number of **problem canvases** (`lean-product-canvas-<problem-name>.md`), one per experiment within that product. See [Main canvas vs. problem canvas](#main-canvas-vs-problem-canvas) below.
 
 Part of the **[Sense & Respond Product Discovery kit](../README.md)**.
 
@@ -35,14 +35,26 @@ npx skills add fzuppa/sense-and-respond-discovery-kit/lean-product-canvas -g
 
 Just ask Claude, in natural language, something like:
 
-- "Help me fill in a Lean Product Canvas for opportunity X"
+- "Help me fill in the main Lean Product Canvas for product X"
+- "Help me fill in a Lean Product Canvas for problem Y"
 - "Generate options for box 1"
 - "I have several options for box 5, help me choose"
 - "Review my box 3"
 
-The skill guides you box by box, asking for the information it needs, showing you the generated results, and asking for your confirmation before saving each summary to the `LPD <Opportunity>.md` file.
+The skill guides you box by box, asking for the information it needs, showing you the generated results, and asking for your confirmation before saving each summary to the canvas file.
 
-The first time it's used in a new project, it'll ask which folder to save LPD files in. Subsequent uses reuse that same folder automatically (it finds it by looking for existing `LPD *.md` files).
+The first time it's used for a product, it creates that product's main canvas. From then on, requests about a specific problem/experiment inside that product create or resume a problem canvas instead — see [Main canvas vs. problem canvas](#main-canvas-vs-problem-canvas).
+
+The first time it's used in a new project, it'll ask which folder to save canvas files in. Subsequent uses reuse that same folder automatically (it finds it by looking for existing `main-lean-product-canvas *.md` / `lean-product-canvas-*.md` files).
+
+## Main canvas vs. problem canvas
+
+This skill produces two kinds of files for the same 8-box methodology:
+
+- **Main canvas** (`main-lean-product-canvas <Product>.md`) — exactly one per product. Captures the overarching opportunity: why the product should exist, its top-level outcomes, its core audience, and its primary hypothesis.
+- **Problem canvas** (`lean-product-canvas-<problem-name>.md`) — one per specific problem/experiment inside that product, created after the main canvas exists. Its Box 3 (Proto-Personas) is offered for reuse from the main canvas instead of being generated from scratch, and its Box 6/8 are scoped to that specific experiment rather than the whole product.
+
+Box 1 also supports two formats depending on the situation: the classic **Business Problem Statement** (for an existing product/situation) or the **Business Opportunity Statement** (for something genuinely new, with no baseline) — see `SKILL.md` for how the skill picks between them.
 
 ## Language
 
@@ -51,7 +63,7 @@ Output language follows this rule, in order:
 2. Otherwise, use the language of the current conversation.
 3. If still unclear, ask before writing.
 
-The skill's own instructions (`SKILL.md`, this README, the prompts in `references/`) are written in English — that doesn't change; only the **content it generates** (the LPD file, the conversation) adapts to the detected language.
+The skill's own instructions (`SKILL.md`, this README, the prompts in `references/`) are written in English — that doesn't change; only the **content it generates** (the canvas file, the conversation) adapts to the detected language.
 
 ## Structure
 
@@ -61,6 +73,7 @@ lean-product-canvas/
 ├── README.md              # this file
 └── references/
     ├── box1_business_problem_statement.md
+    ├── business-opportunity-statement.md   # alternate Box 1, for brand-new products
     ├── box2_business_outcomes.md
     ├── box3_users_proto_personas.md
     ├── box4_user_outcomes_benefits.md

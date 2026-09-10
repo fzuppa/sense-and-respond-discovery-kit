@@ -36,6 +36,8 @@ Use these prompts to accelerate your discovery work, but always treat AI-generat
 
 # BOX 8: Least Amount of Work to Learn It
 
+> **Main canvas vs. problem canvas:** in the product's main canvas, the experiment identified here is typically the product's first MVP — its name/focus commonly becomes the seed for the first problem canvas (`lean-product-canvas-<problem-name>.md`). In a problem canvas, this box is the concrete experiment for that specific problem.
+
 ## Purpose
 
 Specify the experiment to de-risk your hypothesis. Focus on what you could learn in 1 day / 1 week / 1 month.

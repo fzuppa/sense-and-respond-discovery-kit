@@ -5,7 +5,7 @@ A set of Claude Code skills/commands for running Product Discovery using the [Se
 ## What's included
 
 - **[market-research](market-research/)** — maps the competitive landscape of an opportunity across 4 tiers (direct competitors, indirect competitors, potential acquirers, adjacent players) using web search. Command only: `/market-research <opportunity>`.
-- **[lean-product-canvas](lean-product-canvas/)** — fills in, selects between options for, and reviews the 8 boxes of the [Lean Product Canvas](https://jeffgothelf.com/blog/the-lean-product-canvas/) for an opportunity, through guided conversation. Ships as an auto-triggered Skill — just talk to Claude about the Lean Product Canvas.
+- **[lean-product-canvas](lean-product-canvas/)** — fills in, selects between options for, and reviews the 8 boxes of the [Lean Product Canvas](https://jeffgothelf.com/blog/the-lean-product-canvas/), through guided conversation. Manages two related artifacts per product: a single main canvas and any number of per-problem canvases for experiments within it. Ships as an auto-triggered Skill — just talk to Claude about the Lean Product Canvas.
 
 Each skill/command lives in its own self-contained folder and can be installed independently — see that folder's own README for install instructions.
 
@@ -28,12 +28,13 @@ Every skill/command in this kit follows the same output-language rule:
 2. Otherwise, use the language of the current conversation.
 3. If still unclear, ask before writing.
 
-The kit's own instructions (this README, `SKILL.md` files, prompt references, command files) are written in English — that's fixed. Only the **content each skill generates** (LPD boards, research notes) adapts to the target project/conversation language per the rule above.
+The kit's own instructions (this README, `SKILL.md` files, prompt references, command files) are written in English — that's fixed. Only the **content each skill generates** (canvas boards, research notes) adapts to the target project/conversation language per the rule above.
 
 ## Typical flow
 
 1. `/market-research <opportunity>` — understand the competitive landscape before committing to a problem framing.
-2. Talk to Claude about the Lean Product Canvas (e.g. `help me fill in the canvas for <opportunity>`) — work through the 8 boxes, using the market research as input for Users and Solutions.
+2. Talk to Claude about the Lean Product Canvas (e.g. `help me fill in the main canvas for <product>`) — work through the 8 boxes for the product's main canvas, using the market research as input for Users and Solutions.
+3. For each experiment you want to run inside that product, ask for a problem canvas (e.g. `help me fill in a canvas for problem <problem-name>`) — it reuses the main canvas's proto-personas and works through the same 8 boxes scoped to that specific problem.
 
 Nothing enforces this order — each skill can be used standalone.
 
