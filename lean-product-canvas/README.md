@@ -22,29 +22,14 @@ To install it at the user level (available in all your projects) instead of just
 npx skills add fzuppa/sense-and-respond-discovery-kit/lean-product-canvas -g
 ```
 
-`npx skills add` only installs the skill (`SKILL.md` + `references/`) — it doesn't register the `/lpd` command, since commands are a separate mechanism from skills in Claude Code and this CLI doesn't manage them. If you want it, copy `commands/lpd.md` from wherever the skill got installed into your commands folder:
-
-```bash
-# if installed at the project level (no -g):
-cp .claude/skills/lean-product-canvas/commands/lpd.md .claude/commands/lpd.md
-
-# if installed at the user level (with -g):
-mkdir -p ~/.claude/commands
-cp ~/.claude/skills/lean-product-canvas/commands/lpd.md ~/.claude/commands/lpd.md
-```
-
-(Adjust the source path if you installed for a different agent — check `npx skills list` to see where the skill landed.)
+`npx skills add` installs the skill (`SKILL.md` + `references/`) — that's all this skill needs, since it's auto-triggered by Claude recognizing Lean Product Canvas requests in conversation. No slash command to register.
 
 ### Option 2: manual
 
-1. Copy this whole folder (`SKILL.md`, `README.md`, `references/`, and `commands/`) into Claude Code's skills folder:
+1. Copy this whole folder (`SKILL.md`, `README.md`, and `references/`) into Claude Code's skills folder:
    - **For a single project:** paste it into `.claude/skills/lean-product-canvas/` at that project's root.
    - **For all your projects:** paste it into `~/.claude/skills/lean-product-canvas/` (user-level skills).
-2. **(Optional) To get the `/lpd <opportunity>` command:** copy `commands/lpd.md` into Claude Code's commands folder:
-   - **For a single project:** `.claude/commands/lpd.md` at that project's root.
-   - **For all your projects:** `~/.claude/commands/lpd.md`.
-   Commands are a separate registry from skills in Claude Code, so this step isn't automatic — the file needs to be copied separately.
-3. No additional configuration or build step needed.
+2. No additional configuration or build step needed.
 
 ## Usage
 
@@ -54,8 +39,6 @@ Just ask Claude, in natural language, something like:
 - "Generate options for box 1"
 - "I have several options for box 5, help me choose"
 - "Review my box 3"
-
-Or, if you installed the command, `/lpd <opportunity-name>` creates (or resumes) that opportunity's LPD file and starts right at Box 1.
 
 The skill guides you box by box, asking for the information it needs, showing you the generated results, and asking for your confirmation before saving each summary to the `LPD <Opportunity>.md` file.
 
@@ -76,8 +59,6 @@ The skill's own instructions (`SKILL.md`, this README, the prompts in `reference
 lean-product-canvas/
 ├── SKILL.md              # instructions Claude follows
 ├── README.md              # this file
-├── commands/
-│   └── lpd.md             # optional slash command: /lpd <opportunity>
 └── references/
     ├── box1_business_problem_statement.md
     ├── box2_business_outcomes.md

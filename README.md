@@ -5,7 +5,7 @@ A set of Claude Code skills/commands for running Product Discovery using the [Se
 ## What's included
 
 - **[market-research](market-research/)** — maps the competitive landscape of an opportunity across 4 tiers (direct competitors, indirect competitors, potential acquirers, adjacent players) using web search. Command only: `/market-research <opportunity>`.
-- **[lean-product-canvas](lean-product-canvas/)** — fills in, selects between options for, and reviews the 8 boxes of the [Lean Product Canvas](https://jeffgothelf.com/blog/the-lean-product-canvas/) for an opportunity, through guided conversation. Ships as an auto-triggered Skill, plus an optional `/lpd <opportunity>` command.
+- **[lean-product-canvas](lean-product-canvas/)** — fills in, selects between options for, and reviews the 8 boxes of the [Lean Product Canvas](https://jeffgothelf.com/blog/the-lean-product-canvas/) for an opportunity, through guided conversation. Ships as an auto-triggered Skill — just talk to Claude about the Lean Product Canvas.
 
 Each skill/command lives in its own self-contained folder and can be installed independently — see that folder's own README for install instructions.
 
@@ -18,7 +18,7 @@ npx skills add fzuppa/sense-and-respond-discovery-kit/lean-product-canvas
 npx skills add fzuppa/sense-and-respond-discovery-kit/market-research
 ```
 
-`npx skills add` installs the skill content (`SKILL.md` + `references/`) but not slash commands — commands are a separate registry in Claude Code. See each skill's README for the one extra copy step needed if you also want the `/lpd` or `/market-research` commands.
+`npx skills add` installs the skill content (`SKILL.md` + `references/`) but not slash commands — commands are a separate registry in Claude Code. `lean-product-canvas` doesn't need one (it's auto-triggered). See the `market-research` README for the copy step needed if you want the `/market-research` command.
 
 ## Language
 
@@ -33,7 +33,7 @@ The kit's own instructions (this README, `SKILL.md` files, prompt references, co
 ## Typical flow
 
 1. `/market-research <opportunity>` — understand the competitive landscape before committing to a problem framing.
-2. `/lpd <opportunity>` (or just talk to Claude about the Lean Product Canvas) — work through the 8 boxes, using the market research as input for Users and Solutions.
+2. Talk to Claude about the Lean Product Canvas (e.g. `help me fill in the canvas for <opportunity>`) — work through the 8 boxes, using the market research as input for Users and Solutions.
 
 Nothing enforces this order — each skill can be used standalone.
 
