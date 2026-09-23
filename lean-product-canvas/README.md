@@ -56,6 +56,10 @@ This skill produces two kinds of files for the same 8-box methodology:
 
 Box 1 also supports two formats depending on the situation: the classic **Business Problem Statement** (for an existing product/situation) or the **Business Opportunity Statement** (for something genuinely new, with no baseline) — see `SKILL.md` for how the skill picks between them.
 
+## MVPs (running an experiment)
+
+Once a canvas's Box 8 (Least Amount of Work to Learn It) is filled in, you can ask Claude to turn it into an **MVP** — a folder that tracks the actual execution of that experiment. MVPs live in a shared `MVPs/` folder next to the canvas files (e.g. `Products/Acme/MVPs/`), numbered sequentially and named after the risk they test, e.g. `MVPs/#1-Some-Risk-From-Box-7/`. Each MVP folder starts with a single `Summary.md` recording the source canvas's Box 7 (what to learn) and Box 8 (how) — later, whoever runs the experiment adds their own results file. See `SKILL.md` → "Creating an MVP" for the exact naming/derivation rules.
+
 ## Language
 
 Output language follows this rule, in order:
@@ -73,7 +77,7 @@ lean-product-canvas/
 ├── README.md              # this file
 └── references/
     ├── box1_business_problem_statement.md
-    ├── business-opportunity-statement.md   # alternate Box 1, for brand-new products
+    ├── box1_business_opportunity_statement.md   # alternate Box 1, for brand-new products
     ├── box2_business_outcomes.md
     ├── box3_users_proto_personas.md
     ├── box4_user_outcomes_benefits.md

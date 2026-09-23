@@ -24,7 +24,7 @@ The box titles and prompt templates in `references/` are written in English — 
 
 | # | Section name in the file | Prompts file | Available modes |
 |---|------|---------------------|--------------------|
-| 1 | Business Problem Statement *(or Business Opportunity Statement — see "Choosing the Box 1 format" below)* | `box1_business_problem_statement.md` / `business-opportunity-statement.md` | Generate, Select, Review |
+| 1 | Business Problem Statement *(or Business Opportunity Statement — see "Choosing the Box 1 format" below)* | `box1_business_problem_statement.md` / `box1_business_opportunity_statement.md` | Generate, Select, Review |
 | 2 | Business Outcomes | `box2_business_outcomes.md` | Generate, Select, Review |
 | 3 | Users (Proto-Personas) | `box3_users_proto_personas.md` | Generate, Review |
 | 4 | User Outcomes & Benefits (JTBD) | `box4_user_outcomes_benefits.md` | Generate, Review |
@@ -114,7 +114,7 @@ The 8 boxes mean the same thing in both artifacts, scoped differently:
 - **Box 2 (Business Outcomes):** in the **main canvas**, these are the product's high-level/strategic outcomes (company- or product-wide metrics). In a **problem canvas**, they're scoped to that specific problem/experiment.
 - **Box 3 (Users / Proto-Personas):** in the **main canvas**, these are the product's core personas, meant to be reused. In a **problem canvas**, before generating new personas, check whether the product's main canvas already has Box 3 filled in — if so, show it to the user and offer to reuse it as-is (or adapt it) instead of generating from scratch.
 - **Box 6 (Hypotheses):** in the **main canvas**, this is the overarching hypothesis for the whole product opportunity. In a **problem canvas**, it's the hypothesis for that specific experiment.
-- **Box 8 (Least Amount of Work to Learn It):** in the **main canvas**, the output of this box identifies the direction for the product's first MVP/experiment — which typically becomes the seed for the first problem canvas (its name can come directly from what Box 8 proposes testing). In a **problem canvas**, it's the concrete experiment for that problem, as usual.
+- **Box 8 (Least Amount of Work to Learn It):** in the **main canvas**, the output of this box identifies the direction for the product's first MVP/experiment. Depending on scope, that can become either the seed for a new problem canvas (when the experiment needs its own full canvas — new users, new hypotheses, etc.) or, more directly, an **MVP folder** (see "Creating an MVP" below) when the experiment can just be run and documented without a new canvas. In a **problem canvas**, it's the concrete experiment for that problem, and the same MVP-creation option applies there too.
 - **Boxes 4, 5, 7:** no structural difference — just naturally scoped to the whole product (main canvas) or to the specific problem (problem canvas).
 
 ### Choosing the Box 1 format
@@ -122,9 +122,47 @@ The 8 boxes mean the same thing in both artifacts, scoped differently:
 Before generating Box 1 (in either the main canvas or a problem canvas), ask the user — unless already obvious from context — whether this product/situation already exists in some form, or is genuinely new with no existing baseline to observe:
 
 - **Existing product/situation** → use `box1_business_problem_statement.md` (Business Problem Statement).
-- **Genuinely new, no baseline** → use `business-opportunity-statement.md` (Business Opportunity Statement).
+- **Genuinely new, no baseline** → use `box1_business_opportunity_statement.md` (Business Opportunity Statement).
 
 Per Gothelf's own guidance: try the Business Problem Statement first — most situations, even ones that feel "new," turn out to be improving something that already exists. Only use the Business Opportunity Statement if the Problem Statement genuinely doesn't fit.
+
+## Creating an MVP
+
+An MVP is the concrete execution of the experiment described in a canvas's **Box 8** (Least Amount of Work to Learn It), built to de-risk the assumption stated in that canvas's **Box 7** (Most Important Thing to Learn). A single canvas (main or problem) can spawn more than one MVP over time — e.g. a cheap first spike, then a follow-up experiment — each tracked as its own folder. This is lighter-weight than a full problem canvas: use it when the experiment doesn't need its own set of users/hypotheses/etc., just a place to run the test and record the result.
+
+### Where MVPs live
+
+One shared `MVPs/` folder per product, as a sibling of the canvas files inside that product's boards folder (e.g. `Products/Acheev/MVPs/`). All MVPs for that product live here regardless of which canvas (main or a specific problem canvas) they came from — the MVP's `Summary.md` records which source canvas/box it came from, so that link isn't lost. Create the `MVPs/` folder the first time an MVP is created for that product.
+
+### Folder naming
+
+`#<N>-<Kebab-Case-Name>` — e.g. `#1-AI-Powered-Product-Matching-Engine-can-accurately-identify`.
+
+- **`<N>`:** the next sequential integer across the whole `MVPs/` folder. Scan existing subfolders for the current highest `#N-` prefix and increment by 1 (start at `1` if `MVPs/` doesn't exist yet or is empty).
+- **`<Kebab-Case-Name>`:** derived from the source canvas's Box 7 text — strip a leading framing phrase ("Whether ", "Whether the "), keep the first natural clause (up to the first comma, em-dash, or parenthetical aside), preserve the original word casing, and join words with hyphens instead of spaces. **Always show the derived name to the user before creating the folder** so they can adjust it — never create it silently with a name they haven't seen and approved.
+
+### Contents
+
+Inside the new MVP folder, create exactly one file, `Summary.md`, containing the Box 7 and Box 8 content of the source canvas as of that moment, verbatim, each under its own heading, plus a link back to the source canvas file:
+
+```markdown
+# MVP #<N> — <Name>
+
+Source: [[<path to source canvas file>]]
+
+## Most Important Thing to Learn
+<verbatim Box 7 content from the source canvas>
+
+## Least Amount of Work to Learn It
+<verbatim Box 8 content from the source canvas>
+```
+
+Don't create any other file (no `Final Report.md`, no results template, no `_Pending_` scaffolding) — those are written later by whoever actually runs the experiment. This skill only scaffolds the starting point.
+
+### Trigger
+
+- On explicit request ("create an MVP", "let's run an experiment for this", "spin up an MVP from box 8").
+- Also offer it as an option right after Box 8 is saved/confirmed for any canvas (main or problem), alongside the existing suggestion to seed a new problem canvas — see step 9 of "General flow" below.
 
 ## General flow
 
@@ -139,7 +177,7 @@ Per Gothelf's own guidance: try the Business Problem Statement first — most si
 6. **Execute the mode**, following the corresponding prompt's instructions to the letter (see "How to execute each mode").
 7. **Offer to save the summary.** When the user reaches a result they're satisfied with for that box (typically after Generate+Select, or after incorporating Review feedback), draft a concise summary and show it to them before writing it to the file.
 8. **Save with confirmation.** If the box already has content other than `_Pending_` in the file, show the old summary next to the new one and explicitly ask whether to confirm the replacement before overwriting. Never overwrite silently.
-9. **Suggest the next step.** After saving, indicate which box is next pending, leaving it open for the user to choose a different one. If this was the main canvas and Box 8 just got filled in, suggest that its output is a natural starting point for the first problem canvas.
+9. **Suggest the next step.** After saving, indicate which box is next pending, leaving it open for the user to choose a different one. If Box 8 just got filled in (main canvas or problem canvas), suggest its output as the natural starting point for either a new problem canvas (if the experiment needs its own full canvas) or, more directly, an MVP folder (see "Creating an MVP" above) — whichever fits the scope of the experiment.
 
 ### Detecting the requested mode
 
@@ -153,7 +191,7 @@ If the request is ambiguous, ask which of the three modes they want before assum
 
 ### How to execute each mode
 
-In every case: read the corresponding `box{N}_*.md` file — for Box 1, whichever of `box1_business_problem_statement.md` or `business-opportunity-statement.md` applies per "Choosing the Box 1 format" — locate the section for the detected mode, and **act it out yourself following those instructions** (don't just paste the raw prompt for the user to copy elsewhere — you are the AI that prompt describes).
+In every case: read the corresponding `box{N}_*.md` file — for Box 1, whichever of `box1_business_problem_statement.md` or `box1_business_opportunity_statement.md` applies per "Choosing the Box 1 format" — locate the section for the detected mode, and **act it out yourself following those instructions** (don't just paste the raw prompt for the user to copy elsewhere — you are the AI that prompt describes).
 
 - **Generate:** the prompt has placeholders in brackets (e.g. `[DESCRIBE YOUR SITUATION]`, `[PASTE YOUR BOX 1 PROBLEM STATEMENT]`). Before generating, resolve those placeholders:
   - If the data is already in the canvas file (e.g. a previous box's summary, or the main canvas's proto-personas when generating Box 3 of a problem canvas), use it directly without asking again.
