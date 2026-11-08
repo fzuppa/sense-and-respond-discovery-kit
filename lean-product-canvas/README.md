@@ -22,14 +22,14 @@ To install it at the user level (available in all your projects) instead of just
 npx skills add fzuppa/sense-and-respond-discovery-kit/lean-product-canvas -g
 ```
 
-`npx skills add` installs the skill (`SKILL.md` + `references/`) — that's all this skill needs, since it's auto-triggered by Claude recognizing Lean Product Canvas requests in conversation. No slash command to register.
+`npx skills add` installs the skill (`SKILL.md` + `references/` + `scripts/`) — that's all this skill needs, since it's auto-triggered by Claude recognizing Lean Product Canvas requests in conversation. No slash command to register.
 
 ### Option 2: manual
 
-1. Copy this whole folder (`SKILL.md`, `README.md`, and `references/`) into Claude Code's skills folder:
+1. Copy this whole folder (`SKILL.md`, `README.md`, `references/`, and `scripts/`) into Claude Code's skills folder:
    - **For a single project:** paste it into `.claude/skills/lean-product-canvas/` at that project's root.
    - **For all your projects:** paste it into `~/.claude/skills/lean-product-canvas/` (user-level skills).
-2. No additional configuration or build step needed.
+2. No build step. The canvas conversion needs `python3` (standard library only).
 
 ## Usage
 
@@ -40,12 +40,35 @@ Just ask Claude, in natural language, something like:
 - "Generate options for box 1"
 - "I have several options for box 5, help me choose"
 - "Review my box 3"
+- "Turn the Markdown of product X into a canvas" / "Convert the canvas back to Markdown"
 
 The skill guides you box by box, asking for the information it needs, showing you the generated results, and asking for your confirmation before saving each summary to the canvas file.
 
 The first time it's used for a product, it creates that product's main canvas. From then on, requests about a specific problem/experiment inside that product create or resume a problem canvas instead — see [Main canvas vs. problem canvas](#main-canvas-vs-problem-canvas).
 
-The first time it's used in a new project, it'll ask which folder to save canvas files in. Subsequent uses reuse that same folder automatically (it finds it by looking for existing `main-lean-product-canvas *.md` / `lean-product-canvas-*.md` files).
+The first time it's used in a new project, it'll ask which folder to save canvas files in. Subsequent uses reuse that same folder automatically (it finds it by looking for existing `main-lean-product-canvas *.md` / `.canvas` and `lean-product-canvas-*.md` / `.canvas` files).
+
+## Markdown, Canvas, or both
+
+When you start a new canvas, Claude asks how you want to keep it:
+
+| Choice | What you get |
+|---|---|
+| **Markdown** | `<name>.md`, the classic file. |
+| **Canvas** | `<name>.canvas`, an [Obsidian canvas](https://obsidian.md/canvas) laid out like the official Lean Product Canvas (v3): boxes 1, 3, 6 on the left, 5 and 7 in the middle, 2, 4, 8 on the right, with the color coding of the official version (boxes 1-4 red, 5 cyan, 6-8 green; a box that is still pending stays uncolored). |
+| **Both** | The two files side by side with the same base name. The `.md` is the source of truth and the canvas is regenerated from it after each saved box. |
+
+You can also **convert at any time**: "turn the Markdown into a canvas" or "convert the canvas to Markdown". Box titles and text are copied verbatim in both directions, so a round trip changes nothing. Claude never overwrites a file silently: if the target exists, it shows which boxes differ and asks first. In **Both** mode, if you edited one of the files by hand, it detects the difference before saving the next box and asks which version wins.
+
+What the canvas doesn't carry: box positions and sizes you change in Obsidian are lost when it is regenerated, extra nodes you add are not carried back to the Markdown, and the header's `Date:` is the generation date (`Iteration:` stays blank). Node heights are estimated from the text length, so a very long box may need a manual resize.
+
+The conversion is done by [`scripts/lpc_canvas.py`](scripts/lpc_canvas.py) (`to-canvas`, `to-md`, `compare`), Python standard library only. Claude runs it for you; you can also run it by hand:
+
+```bash
+python3 -I scripts/lpc_canvas.py to-canvas "main-lean-product-canvas Acme.md" "main-lean-product-canvas Acme.canvas"
+python3 -I scripts/lpc_canvas.py to-md "main-lean-product-canvas Acme.canvas" "main-lean-product-canvas Acme.md"
+python3 -I scripts/lpc_canvas.py compare "main-lean-product-canvas Acme.md" "main-lean-product-canvas Acme.canvas"
+```
 
 ## Main canvas vs. problem canvas
 
@@ -75,6 +98,8 @@ The skill's own instructions (`SKILL.md`, this README, the prompts in `reference
 lean-product-canvas/
 ├── SKILL.md              # instructions Claude follows
 ├── README.md              # this file
+├── scripts/
+│   └── lpc_canvas.py                            # Markdown <-> Obsidian canvas conversion
 └── references/
     ├── box1_business_problem_statement.md
     ├── box1_business_opportunity_statement.md   # alternate Box 1, for brand-new products

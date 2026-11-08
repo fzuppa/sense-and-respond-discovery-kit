@@ -1,11 +1,11 @@
 ---
 name: lean-product-canvas
-description: "Use when working on a Lean Product Canvas (LPD): filling in a box through guided questions, choosing between generated options, or reviewing an already-written box. Covers both the product's main canvas and per-problem canvases for experiments within it. Triggers: 'Lean Product Canvas', 'LPD', 'box 1..8', 'business problem statement', 'business opportunity statement', 'business outcomes', 'proto-persona', 'JTBD', 'canvas hypotheses', 'main canvas', 'help me fill in the canvas', 'review my box', 'I have several options for box'."
+description: "Use when working on a Lean Product Canvas (LPD): filling in a box through guided questions, choosing between generated options, or reviewing an already-written box. Covers both the product's main canvas and per-problem canvases for experiments within it. Triggers: 'Lean Product Canvas', 'LPD', 'box 1..8', 'business problem statement', 'business opportunity statement', 'business outcomes', 'proto-persona', 'JTBD', 'canvas hypotheses', 'main canvas', 'help me fill in the canvas', 'review my box', 'I have several options for box'. A canvas can be kept as Markdown, as an Obsidian canvas (.canvas) laid out like the official Lean Product Canvas, or both, and converted from one to the other. Also triggers on: 'as a canvas', 'canvas view', 'draw the lean product canvas', 'turn the markdown into a canvas', 'convert the canvas to markdown'."
 ---
 
 # Lean Product Canvas (LPD)
 
-Guide for filling in, selecting between options for, and reviewing the 8 boxes of the [Lean Product Canvas](https://jeffgothelf.com/blog/the-lean-product-canvas/) — either for a product's **main canvas** or for a specific **problem/experiment** within that product — using the prompts packaged in `references/` (relative to this file). Self-contained skill: it doesn't depend on any folder outside the skill itself, only on the project where it's invoked, to save its results.
+Guide for filling in, selecting between options for, and reviewing the 8 boxes of the [Lean Product Canvas](https://jeffgothelf.com/blog/the-lean-product-canvas/) — either for a product's **main canvas** or for a specific **problem/experiment** within that product — using the prompts packaged in `references/` (relative to this file). Self-contained skill: it doesn't depend on any folder outside the skill itself, only on the project where it's invoked, to save its results. The only code it ships is `scripts/lpc_canvas.py` (Python standard library), used to convert between Markdown and an Obsidian canvas — see "Output format: Markdown, Canvas, or both".
 
 This skill is part of the **Sense & Respond Product Discovery kit**. It's typically used after `market-research` has produced context on users/market, and feeds the canvas boxes (Users, Solutions) from that research when available.
 
@@ -49,12 +49,14 @@ This skill produces two kinds of files for the same underlying methodology:
 - Main canvas: `main-lean-product-canvas <Product>.md` (e.g. `main-lean-product-canvas Acme Wellness.md`)
 - Problem canvas: `lean-product-canvas-<problem-name>.md` (e.g. `lean-product-canvas-onboarding-drop-off.md`)
 
+Main and problem canvases can also exist as an Obsidian canvas, with the same base name and the extension `.canvas` (e.g. `main-lean-product-canvas Acme Wellness.canvas`) — see "Output format: Markdown, Canvas, or both".
+
 Both live in the same boards folder (see "Finding or defining the boards folder" below).
 
 ### Deciding which one to create or work on
 
 1. **Identify the product** the user is talking about (ask if unclear).
-2. **Look for an existing main canvas** for that product (`main-lean-product-canvas <Product>.md`) in the boards folder.
+2. **Look for an existing main canvas** for that product (`main-lean-product-canvas <Product>.md` or `.canvas`) in the boards folder.
    - **Not found** → this is the first canvas for this product. It becomes the **main canvas**.
    - **Found** → the main canvas already exists.
      - If the user is explicitly asking to revisit/review the main canvas itself, work on that file.
@@ -65,7 +67,7 @@ Both live in the same boards folder (see "Finding or defining the boards folder"
 
 This skill doesn't assume any fixed folder structure — it adapts to whatever project it's used in:
 
-1. **Look for a folder already in use.** Before asking anything, search the current project for existing files matching `main-lean-product-canvas *.md` or `lean-product-canvas-*.md` (e.g. with `find . -iname "main-lean-product-canvas *.md" -o -iname "lean-product-canvas-*.md"`). If you find any, the folder containing them is the boards folder — use it without asking again. This makes the folder choice persist automatically once a project has used the skill before.
+1. **Look for a folder already in use.** Before asking anything, search the current project for existing files matching `main-lean-product-canvas *.md` / `.canvas` or `lean-product-canvas-*.md` / `.canvas` (e.g. with `find . \( -iname "main-lean-product-canvas *.md" -o -iname "lean-product-canvas-*.md" -o -iname "main-lean-product-canvas *.canvas" -o -iname "lean-product-canvas-*.canvas" \)`). If you find any, the folder containing them is the boards folder — use it without asking again. This makes the folder choice persist automatically once a project has used the skill before.
 2. **If none is found** (first use of the skill in this project), ask the user which folder to save this project's canvas files in (suggest `Lean Product Canvas Boards/` as a default if they have no preference). Create the folder if it doesn't exist.
 
 ### The file scaffold
@@ -103,7 +105,7 @@ _Pending_
 A problem canvas uses the identical scaffold, just titled `# Lean Product Canvas — <Problem>` instead.
 
 - **Product / problem name:** if it isn't clear from the conversation context, ask "What's the product called?" (for a main canvas) or "What's this problem/experiment called?" (for a problem canvas) before creating or looking up the file.
-- **Creation:** if the corresponding file doesn't exist yet in the boards folder determined above, create it with the full scaffold above (all 8 boxes as `_Pending_`) before filling in the first box.
+- **Creation:** if the corresponding file doesn't exist yet in the boards folder determined above, create it with the full scaffold above (all 8 boxes as `_Pending_`) before filling in the first box. If the user chose a canvas (see "Output format: Markdown, Canvas, or both"), the scaffold is created as a `.canvas` as well, or only as a `.canvas` through a scratch working copy.
 - **Content of each section:** only the **concise summary** of that box (see below) — not the full detail of the conversation, no confidence levels, no lists of pending research. That detail lives in the conversation, not in the file.
 
 ### Per-box differences between the main canvas and a problem canvas
@@ -126,6 +128,65 @@ Before generating Box 1 (in either the main canvas or a problem canvas), ask the
 
 Per Gothelf's own guidance: try the Business Problem Statement first — most situations, even ones that feel "new," turn out to be improving something that already exists. Only use the Business Opportunity Statement if the Problem Statement genuinely doesn't fit.
 
+## Output format: Markdown, Canvas, or both
+
+Any canvas (main or problem) can be kept in one of three forms.
+
+| Choice | Files | Source of truth |
+|---|---|---|
+| **Markdown** | `<name>.md` | the `.md` |
+| **Canvas** | `<name>.canvas` | the `.canvas` |
+| **Both** | `<name>.md` and `<name>.canvas`, side by side, same base name | the `.md`; the canvas is regenerated from it |
+
+The `.canvas` is an Obsidian canvas (JSON Canvas 1.0) laid out like the official Lean Product Canvas (v3): boxes 1, 3, 6 on the left; 5 (tall) and 7 in the middle; 2, 4, 8 on the right; a header with title, initiative, date and iteration; a footer with the license credit. Boxes 1-4 are red, 5 cyan, 6-8 green, as in the official color-coded version; a box that is still pending stays uncolored, so progress is visible. Each box holds its title, the official guiding question in italics, and the box content.
+
+### When to ask, and how to detect the choice
+
+- **New canvas** (neither `<name>.md` nor `<name>.canvas` exists): ask once, before the research-scope question: *"Do you want this canvas as Markdown, as a canvas, or both?"* Don't assume a default; you may mention what the product's other canvases use. The answer applies to that canvas for the rest of the work, so don't ask again.
+- **Existing canvas**: infer it from the files, don't ask. Only `.md` → Markdown. Only `.canvas` → Canvas. Both → Both.
+- The user can change their mind at any time ("also give me the canvas", "I only want the canvas now"): that's a conversion, see below. Never delete the user's files to match a choice; if they want only one form, they delete the other.
+
+### The conversion script
+
+`scripts/lpc_canvas.py` (relative to this file; Python standard library) converts between the two forms. Run it with `python3 -I`, from a neutral directory, passing paths as arguments:
+
+| Command | What it does |
+|---|---|
+| `to-canvas MD CANVAS [--date YYYY-MM-DD] [--link NAME] [--strings FILE]` | Lays the Markdown out as a canvas. `--link` adds a `[[link]]` to the Markdown in the footer (pass the `.md` base name in Both mode, omit it in Canvas mode). `--date` defaults to today. |
+| `to-md CANVAS MD [--h1-prefix TEXT]` | Writes the Markdown back from the canvas. If `MD` already exists its title prefix is kept; for a new file it defaults to "Main Lean Product Canvas" (file name starting with `main-`) or "Lean Product Canvas". |
+| `compare MD CANVAS` | Prints, box by box, whether the two agree. Exit code 0 if identical, 1 if they differ. |
+
+Box titles and content are copied verbatim both ways, so a canvas → Markdown → canvas round trip changes nothing. Both commands **overwrite their output file**: you decide when that is OK, following the rules below.
+
+**Output language.** The box titles come from the Markdown headings, already translated. When the output language isn't English, also translate the canvas chrome: write a small JSON file in a scratch directory with the keys you need (`initiative`, `date`, `iteration`, `data`, and `questions` with keys `"1"`..`"8"` for the guiding questions) and pass it with `--strings`. Anything you leave out stays in English. `to-md` doesn't need it: it drops the guiding question whatever its language.
+
+### How each choice works
+
+- **Markdown:** exactly as described in the rest of this skill.
+- **Both:** the `.md` is the source of truth.
+  1. Before saving a box, run `compare`. If the files differ, someone edited one of them by hand: show which boxes differ and ask which version wins (canvas → Markdown with `to-md`, or Markdown → canvas with `to-canvas`). Never decide silently, and never write the new box until that is resolved.
+  2. Save the box to the `.md` following the usual confirmation rules.
+  3. Regenerate the canvas with `to-canvas` (with `--link`).
+- **Canvas only:** there is no `.md` in the project. Keep a **working copy** of the Markdown in a scratch directory outside the project (a temp dir), named after the canvas so the title prefix is right (`main-lean-product-canvas <Product>.md`).
+  - **New canvas:** write the scaffold (all boxes `_Pending_`) to the working copy and run `to-canvas` to create the canvas.
+  - **Every time you read or save a box:** first refresh the working copy from the canvas with `to-md` (this picks up anything the user changed by hand), apply the change to the working copy, then run `to-canvas`. This is also how you read boxes you need as context (Box 3 for reuse, Box 7 and 8 for an MVP).
+  - Never leave the working copy inside the user's project.
+
+### Converting an existing canvas
+
+On requests like "turn the markdown into a canvas" or "convert the canvas to markdown":
+1. Find the source file. If only one form exists, that's the source. If both exist, run `compare` and ask which one is the source.
+2. If the target file doesn't exist, convert and report. If it exists, run `compare`, show which boxes differ, and ask before overwriting.
+3. Report where the file is. After a Markdown → canvas conversion the canvas is in **Both** mode from then on.
+
+### What the canvas does not carry
+
+Say this when it matters (the first conversion, or when the user edits the canvas by hand):
+- **Layout is regenerated.** Moving or resizing boxes in Obsidian is lost the next time the canvas is regenerated. Text edits are not lost (see the rules above), but they only reach the `.md` when it is refreshed with `to-md`.
+- **Extra nodes** the user adds to the canvas (notes, links) are not carried back to the Markdown. `to-md` prints a note listing them.
+- **The `Date:` in the header** is the generation date, and `Iteration:` is left blank: the Markdown doesn't store either.
+- **Rendering is not checked.** Node heights are estimated from the text length; a very long box may need a manual resize in Obsidian.
+
 ## Creating an MVP
 
 An MVP is the concrete execution of the experiment described in a canvas's **Box 8** (Least Amount of Work to Learn It), built to de-risk the assumption stated in that canvas's **Box 7** (Most Important Thing to Learn). A single canvas (main or problem) can spawn more than one MVP over time — e.g. a cheap first spike, then a follow-up experiment — each tracked as its own folder. This is lighter-weight than a full problem canvas: use it when the experiment doesn't need its own set of users/hypotheses/etc., just a place to run the test and record the result.
@@ -143,7 +204,7 @@ One shared `MVPs/` folder per product, as a sibling of the canvas files inside t
 
 ### Contents
 
-Inside the new MVP folder, create exactly one file, `Summary.md`, containing the Box 7 and Box 8 content of the source canvas as of that moment, verbatim, each under its own heading, plus a link back to the source canvas file:
+Inside the new MVP folder, create exactly one file, `Summary.md`, containing the Box 7 and Box 8 content of the source canvas as of that moment, verbatim (if the canvas exists only as a `.canvas`, read the boxes by converting it with `to-md` into a scratch directory), each under its own heading, plus a link back to the source canvas file:
 
 ```markdown
 # MVP #<N> — <Name>
@@ -171,12 +232,13 @@ Don't create any other file (no `Final Report.md`, no results template, no `_Pen
    - **Use related project information:** search (grep/find by the product/problem name and related terms) for prior notes, previous canvases, competitor analysis (e.g. a `market-research` output), or other existing material in the project, and use it as context/evidence when generating, citing where each piece of data comes from.
    - **Go straight to Box 1:** don't search for anything beyond this conversation; start the Generation prompt with only what the user tells you.
    For subsequent boxes of the same canvas, there's no need to repeat this question — the context already gathered (or the decision not to gather it) applies to the whole canvas, unless the user asks otherwise.
+2b. **Ask for the output format, only when creating a new canvas** (neither the `.md` nor the `.canvas` exists): Markdown, Canvas, or both, per "Output format: Markdown, Canvas, or both". For an existing canvas, infer it from the files instead of asking. If the user asks to convert between forms, follow "Converting an existing canvas" instead of the box flow.
 3. **On Box 1, resolve the format** per "Choosing the Box 1 format" above before generating anything.
 4. **On Box 3 of a problem canvas**, check the product's main canvas for existing proto-personas first, per "Per-box differences" above.
 5. **Detect the mode** from the language of the request (see table below). No exact command needed.
 6. **Execute the mode**, following the corresponding prompt's instructions to the letter (see "How to execute each mode").
 7. **Offer to save the summary.** When the user reaches a result they're satisfied with for that box (typically after Generate+Select, or after incorporating Review feedback), draft a concise summary and show it to them before writing it to the file.
-8. **Save with confirmation.** If the box already has content other than `_Pending_` in the file, show the old summary next to the new one and explicitly ask whether to confirm the replacement before overwriting. Never overwrite silently.
+8. **Save with confirmation.** If the box already has content other than `_Pending_` in the file, show the old summary next to the new one and explicitly ask whether to confirm the replacement before overwriting. Never overwrite silently. Saving follows the canvas's output format: in Both mode, check `compare` first and regenerate the canvas after saving; in Canvas mode, go through the working copy (see "Output format: Markdown, Canvas, or both").
 9. **Suggest the next step.** After saving, indicate which box is next pending, leaving it open for the user to choose a different one. If Box 8 just got filled in (main canvas or problem canvas), suggest its output as the natural starting point for either a new problem canvas (if the experiment needs its own full canvas) or, more directly, an MVP folder (see "Creating an MVP" above) — whichever fits the scope of the experiment.
 
 ### Detecting the requested mode
