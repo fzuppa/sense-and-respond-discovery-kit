@@ -1,6 +1,6 @@
 # Lean Product Canvas (Claude Code skill)
 
-Skill for filling in, selecting between options for, and reviewing the 8 boxes of the [Lean Product Canvas](https://jeffgothelf.com/blog/the-lean-product-canvas/) by talking to Claude — no copy-pasting prompts by hand. It manages two related artifacts per product: a single **main canvas** (`main-lean-product-canvas <Product>.md`) and any number of **problem canvases** (`lean-product-canvas-<problem-name>.md`), one per experiment within that product. See [Main canvas vs. problem canvas](#main-canvas-vs-problem-canvas) below.
+Skill for filling in, selecting between options for, and reviewing the 8 boxes of the [Lean Product Canvas](https://jeffgothelf.com/blog/the-lean-product-canvas/) by talking to Claude — no copy-pasting prompts by hand. It manages three related artifacts per product: a single **main canvas** (`main-lean-product-canvas <Product>.md`), any number of **problem canvases** (`lean-product-canvas-<problem-name>.md`), one per experiment within that product, and a backlog of **problem records** (one Business Problem Statement per identified problem, in the product's problems folder). See [Main canvas vs. problem canvas](#main-canvas-vs-problem-canvas) and [Problem records](#problem-records-identified-problems) below.
 
 Part of the **[Sense & Respond Product Discovery kit](../README.md)**.
 
@@ -40,6 +40,7 @@ Just ask Claude, in natural language, something like:
 - "Generate options for box 1"
 - "I have several options for box 5, help me choose"
 - "Review my box 3"
+- "I want to write a new problem for product X" / "List the problems of product X"
 - "Turn the Markdown of product X into a canvas" / "Convert the canvas back to Markdown"
 
 The skill guides you box by box, asking for the information it needs, showing you the generated results, and asking for your confirmation before saving each summary to the canvas file.
@@ -60,7 +61,7 @@ When you start a new canvas, Claude asks how you want to keep it:
 
 You can also **convert at any time**: "turn the Markdown into a canvas" or "convert the canvas to Markdown". Box titles and text are copied verbatim in both directions, so a round trip changes nothing. Claude never overwrites a file silently: if the target exists, it shows which boxes differ and asks first. In **Both** mode, if you edited one of the files by hand, it detects the difference before saving the next box and asks which version wins.
 
-What the canvas doesn't carry: box positions and sizes you change in Obsidian are lost when it is regenerated, extra nodes you add are not carried back to the Markdown, and the header's `Date:` is the generation date (`Iteration:` stays blank). Node heights are estimated from the text length, so a very long box may need a manual resize.
+What the canvas doesn't carry: box positions and sizes you change in Obsidian are lost when it is regenerated, extra nodes you add are not carried back to the Markdown, and the header's `Date:` is the generation date (`Iteration:` stays blank). Node heights are estimated from the text length, so a very long box may need a manual resize. Problem records are always Markdown.
 
 The conversion is done by [`scripts/lpc_canvas.py`](scripts/lpc_canvas.py) (`to-canvas`, `to-md`, `compare`), Python standard library only. Claude runs it for you; you can also run it by hand:
 
@@ -78,6 +79,16 @@ This skill produces two kinds of files for the same 8-box methodology:
 - **Problem canvas** (`lean-product-canvas-<problem-name>.md`) — one per specific problem/experiment inside that product, created after the main canvas exists. Its Box 3 (Proto-Personas) is offered for reuse from the main canvas instead of being generated from scratch, and its Box 6/8 are scoped to that specific experiment rather than the whole product.
 
 Box 1 also supports two formats depending on the situation: the classic **Business Problem Statement** (for an existing product/situation) or the **Business Opportunity Statement** (for something genuinely new, with no baseline) — see `SKILL.md` for how the skill picks between them.
+
+## Problem records (identified problems)
+
+When you want to write down a problem of a product that already exists, Claude interviews you one question at a time — what the product was designed to achieve, how you observed it isn't meeting that goal, what it costs the business, what customer behavior would change if it were solved — and writes a **Business Problem Statement** plus the evidence and open assumptions behind it. The result is saved as `<problem-name>.md` in the product's problems folder, next to the canvas files (e.g. `Products/Acme/Problems/`).
+
+- **The folder name follows the output language:** `Problems` in English, `Problemas` in Spanish, and so on. If a problems folder already exists in another language, it's reused — it's recognized by `type: problem` in its files' frontmatter.
+- Each record has a `status`: `identified`, `selected` (promoted to a problem canvas, whose Box 1 starts pre-filled with the record's statement) or `discarded`.
+- Ask "list the problems" to see the backlog, or let Claude help you pick which one to work on first with the Box 1 Selection prompt.
+
+Always a Business Problem Statement — records are for products that already exist. See `SKILL.md` → "Capturing a problem" and `references/capture_problem.md`.
 
 ## MVPs (running an experiment)
 
@@ -102,6 +113,7 @@ lean-product-canvas/
 │   └── lpc_canvas.py                            # Markdown <-> Obsidian canvas conversion
 └── references/
     ├── box1_business_problem_statement.md
+    ├── capture_problem.md                       # interview guide for problem records
     ├── box1_business_opportunity_statement.md   # alternate Box 1, for brand-new products
     ├── box2_business_outcomes.md
     ├── box3_users_proto_personas.md

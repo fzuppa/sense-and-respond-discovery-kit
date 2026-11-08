@@ -1,6 +1,6 @@
 ---
 name: lean-product-canvas
-description: "Use when working on a Lean Product Canvas (LPD): filling in a box through guided questions, choosing between generated options, or reviewing an already-written box. Covers both the product's main canvas and per-problem canvases for experiments within it. Triggers: 'Lean Product Canvas', 'LPD', 'box 1..8', 'business problem statement', 'business opportunity statement', 'business outcomes', 'proto-persona', 'JTBD', 'canvas hypotheses', 'main canvas', 'help me fill in the canvas', 'review my box', 'I have several options for box'. A canvas can be kept as Markdown, as an Obsidian canvas (.canvas) laid out like the official Lean Product Canvas, or both, and converted from one to the other. Also triggers on: 'as a canvas', 'canvas view', 'draw the lean product canvas', 'turn the markdown into a canvas', 'convert the canvas to markdown'."
+description: "Use when working on a Lean Product Canvas (LPD): filling in a box through guided questions, choosing between generated options, or reviewing an already-written box. Covers the product's main canvas, per-problem canvases for experiments within it, and a backlog of identified problems (problem records, each written as a Business Problem Statement). Triggers: 'Lean Product Canvas', 'LPD', 'box 1..8', 'business problem statement', 'business opportunity statement', 'business outcomes', 'proto-persona', 'JTBD', 'canvas hypotheses', 'main canvas', 'help me fill in the canvas', 'review my box', 'I have several options for box', 'write/log/record a problem', 'new problem for <product>', 'problems backlog', 'list the problems'. A canvas can be kept as Markdown, as an Obsidian canvas (.canvas) laid out like the official Lean Product Canvas, or both, and converted from one to the other. Also triggers on: 'as a canvas', 'canvas view', 'draw the lean product canvas', 'turn the markdown into a canvas', 'convert the canvas to markdown'."
 ---
 
 # Lean Product Canvas (LPD)
@@ -37,21 +37,23 @@ Use the English section name above as the canonical title for the `## N. <name>`
 
 All files live in `references/`, relative to this file (SKILL.md). Boxes 3, 4, and 7 don't have a Selection prompt — they produce a single synthesized artifact, not multiple options to compare — if the user asks to "select" for one of these boxes, explain this and offer to refine the result with targeted questions instead, or move to Review.
 
-## Two related artifacts: the main canvas and problem canvases
+## Related artifacts: main canvas, problem canvases, and problem records
 
-This skill produces two kinds of files for the same underlying methodology:
+This skill produces three kinds of files for the same underlying methodology:
 
 - **Main canvas** — exactly **one per product**. Captures the overarching opportunity: why this product should exist, its top-level outcomes, its core audience, and the primary hypothesis driving it.
 - **Problem canvas** — **one per specific problem/experiment** being tackled inside that product, created after the main canvas exists. Each one works through the same 8 boxes, but scoped to that particular problem instead of the whole product.
+- **Problem record** — **one per identified problem** of an existing product, stored in the product's problems folder (see "Capturing a problem" below). It's a lightweight backlog entry: a Business Problem Statement plus the evidence and assumptions behind it, not an 8-box canvas. A record can later be promoted to a problem canvas, which starts with Box 1 already written.
 
 ### File naming
 
 - Main canvas: `main-lean-product-canvas <Product>.md` (e.g. `main-lean-product-canvas Acme Wellness.md`)
 - Problem canvas: `lean-product-canvas-<problem-name>.md` (e.g. `lean-product-canvas-onboarding-drop-off.md`)
+- Problem record: `<problem-name>.md` inside the problems folder (e.g. `Problems/onboarding-drop-off.md`). `<problem-name>` is short, kebab-case, in the output language.
 
-Main and problem canvases can also exist as an Obsidian canvas, with the same base name and the extension `.canvas` (e.g. `main-lean-product-canvas Acme Wellness.canvas`) — see "Output format: Markdown, Canvas, or both".
+Main and problem canvases can also exist as an Obsidian canvas, with the same base name and the extension `.canvas` (e.g. `main-lean-product-canvas Acme Wellness.canvas`) — see "Output format: Markdown, Canvas, or both". Problem records are always Markdown.
 
-Both live in the same boards folder (see "Finding or defining the boards folder" below).
+Main and problem canvases live in the same boards folder (see "Finding or defining the boards folder" below). The problems folder is a subfolder of it.
 
 ### Deciding which one to create or work on
 
@@ -69,6 +71,8 @@ This skill doesn't assume any fixed folder structure — it adapts to whatever p
 
 1. **Look for a folder already in use.** Before asking anything, search the current project for existing files matching `main-lean-product-canvas *.md` / `.canvas` or `lean-product-canvas-*.md` / `.canvas` (e.g. with `find . \( -iname "main-lean-product-canvas *.md" -o -iname "lean-product-canvas-*.md" -o -iname "main-lean-product-canvas *.canvas" -o -iname "lean-product-canvas-*.canvas" \)`). If you find any, the folder containing them is the boards folder — use it without asking again. This makes the folder choice persist automatically once a project has used the skill before.
 2. **If none is found** (first use of the skill in this project), ask the user which folder to save this project's canvas files in (suggest `Lean Product Canvas Boards/` as a default if they have no preference). Create the folder if it doesn't exist.
+
+The problems folder lives inside the boards folder (e.g. `Products/Acme/Problems/`). Its name follows the output-language rule and is the translation of "Problems" (English: `Problems`, Spanish: `Problemas`, Portuguese: `Problemas`, French: `Problèmes`, …). Because the language can differ between sessions, **look for an existing problems folder before creating one**: any subfolder of the boards folder whose files have `type: problem` in their frontmatter, whatever language its name is in, is the problems folder — reuse it as-is and never create a second one or rename it. Only when there's none, create it with the name in the current output language, and do it the first time a problem is saved.
 
 ### The file scaffold
 
@@ -128,9 +132,11 @@ Before generating Box 1 (in either the main canvas or a problem canvas), ask the
 
 Per Gothelf's own guidance: try the Business Problem Statement first — most situations, even ones that feel "new," turn out to be improving something that already exists. Only use the Business Opportunity Statement if the Problem Statement genuinely doesn't fit.
 
+This choice doesn't apply to problem records: they're always Business Problem Statements, because a record describes a problem of a product that already exists (see "Capturing a problem").
+
 ## Output format: Markdown, Canvas, or both
 
-Any canvas (main or problem) can be kept in one of three forms.
+Any canvas (main or problem) can be kept in one of three forms. Problem records are always Markdown and don't follow this section.
 
 | Choice | Files | Source of truth |
 |---|---|---|
@@ -187,6 +193,65 @@ Say this when it matters (the first conversion, or when the user edits the canva
 - **The `Date:` in the header** is the generation date, and `Iteration:` is left blank: the Markdown doesn't store either.
 - **Rendering is not checked.** Node heights are estimated from the text length; a very long box may need a manual resize in Obsidian.
 
+## Capturing a problem
+
+Use this when the user wants to write down, log, or record a problem of a product that already exists ("I want to write a new problem for Acheev", "log this problem", "new problem for X"). It produces a **problem record** in the product's problems folder — not a canvas. Always a Business Problem Statement (`references/box1_business_problem_statement.md`); don't ask which Box 1 format to use. If the situation described has no existing product or service to observe, say that capturing doesn't fit and offer to start a canvas instead, where the Opportunity Statement is available.
+
+### Flow
+
+1. **Identify the product** (ask if unclear) and resolve the boards folder and problems folder per "Finding or defining the boards folder". If the product has no boards folder yet, resolve it by that section's rules.
+2. **Interview the user, one question at a time**, following `references/capture_problem.md`. The questions map one-to-one onto the slots of the Business Problem Statement; don't draft anything until every slot has an answer. If the user's description is a solution in disguise ("they need a report"), ask what problem that solution would solve before continuing. If an answer is missing or unsure, record it as unknown/`unverified` — never invent evidence.
+3. **Draft the statement** in the exact format of the Box 1 template, translated per the output-language rule, and show it to the user together with the evidence table and the open assumptions. Offer a Box 1 Review (`## REVIEW PROMPT`) before saving; run it only if the user accepts.
+4. **Confirm the problem name** (short, kebab-case) before creating the file — never create it silently with a name the user hasn't seen.
+5. **Save** to `<problems folder>/<problem-name>.md` with the format below. If a file with that name already exists, show the old content next to the new and ask before overwriting.
+6. **Suggest the next step:** capture another problem, or promote this one to a canvas (see below).
+
+### Problem record format
+
+Frontmatter keys and values stay in English (`type`, `status`, `identified`…) so the folder can be found and filtered regardless of language; the headings and everything else are translated per the output-language rule (shown here in English):
+
+```markdown
+---
+type: problem
+product: <Product>
+status: identified
+date: <YYYY-MM-DD>
+---
+
+# <Problem name>
+
+## Business Problem Statement
+<statement in the exact Box 1 format>
+
+## Who suffers it
+<persona/segment, and the situation in which it shows up>
+
+## Evidence
+| Signal | Provenance | Source |
+|---|---|---|
+| … | real / survey / secondary / synthetic / unverified | <who, when, file> |
+
+## Open assumptions
+- <what has to be true for this to be the real problem, and what would test it>
+```
+
+Unlike a canvas box, a record **does** keep evidence and assumptions: that's what makes the backlog usable when deciding which problem to work on first.
+
+`status` values: `identified` (default), `selected` (promoted to a canvas — add `canvas: [[lean-product-canvas-<name>]]` to the frontmatter), `discarded` (add a `reason:` line to the frontmatter; a discarded problem is product memory too).
+
+### Listing and prioritizing
+
+When the user asks to see the problems ("list the problems", "what problems do we have for X?"), read the files in the problems folder and show a table with name, status, and one line of each statement. If they want help choosing which to work on, use the Box 1 Selection prompt over the `identified` records. Never choose for them.
+
+Box 1 Selection also feeds this backlog: when a Selection leaves non-chosen statements as backlog, offer to save each one as a problem record (`identified`) — only after the user confirms, and still asking for the evidence of each, since a generated statement is an assumption.
+
+### Promoting a problem to a canvas
+
+When the user decides to work on a recorded problem:
+1. Create `lean-product-canvas-<problem-name>.md` in the boards folder with the standard scaffold, plus a line `Source problem: [[<path to the record>]]` under the title. Ask for the output format first (see "Output format: Markdown, Canvas, or both"); the `Source problem:` line travels into the canvas header.
+2. Pre-fill Box 1 with the record's statement and ask the user to confirm it; don't regenerate it, and skip the Box 1 format question and the research-scope question (the record's evidence is the starting context). Everything from Box 2 on follows the normal flow.
+3. Update the record: `status: selected` and `canvas: [[…]]`.
+
 ## Creating an MVP
 
 An MVP is the concrete execution of the experiment described in a canvas's **Box 8** (Least Amount of Work to Learn It), built to de-risk the assumption stated in that canvas's **Box 7** (Most Important Thing to Learn). A single canvas (main or problem) can spawn more than one MVP over time — e.g. a cheap first spike, then a follow-up experiment — each tracked as its own folder. This is lighter-weight than a full problem canvas: use it when the experiment doesn't need its own set of users/hypotheses/etc., just a place to run the test and record the result.
@@ -227,6 +292,7 @@ Don't create any other file (no `Final Report.md`, no results template, no `_Pen
 
 ## General flow
 
+0. **If the user wants to write down or list problems** (not work on a canvas box), follow "Capturing a problem" instead of the steps below.
 1. **Identify the product, whether this is the main canvas or a problem canvas, and the box.** Follow "Deciding which one to create or work on" above to resolve the file. If the user doesn't specify the box, look at that file (if it exists) and suggest the first box still `_Pending_` as the next step — but if the user asks for a specific different box, address that without insisting on order.
 2. **Ask about research scope, only when starting Box 1 of a new canvas** (the file doesn't exist yet, or exists but Box 1 is still `_Pending_`). Before touching the Generation prompt, explicitly ask the user — don't assume any default:
    - **Use related project information:** search (grep/find by the product/problem name and related terms) for prior notes, previous canvases, competitor analysis (e.g. a `market-research` output), or other existing material in the project, and use it as context/evidence when generating, citing where each piece of data comes from.
@@ -248,8 +314,9 @@ Don't create any other file (no `Final Report.md`, no results template, no `_Pen
 | "help me fill in/think through/put together box N", "I don't know where to start with...", "give me options for..." | **Generate** | `## GENERATION PROMPT` |
 | "I have these options, help me choose", "I generated several versions of box N", "which one should I pick?" | **Select** | `## SELECTION PROMPT` (if it exists for that box) |
 | "review my box N", "how does this look?", "give me feedback on..." | **Review** | `## REVIEW PROMPT` |
+| "I want to write/log/record a problem", "new problem for <product>", "list the problems" | **Capture** (no canvas box) | `references/capture_problem.md` — see "Capturing a problem" |
 
-If the request is ambiguous, ask which of the three modes they want before assuming one.
+If the request is ambiguous, ask which mode they want before assuming one.
 
 ### How to execute each mode
 
