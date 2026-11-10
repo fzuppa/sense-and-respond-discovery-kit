@@ -58,7 +58,7 @@ Main and problem canvases live in the same boards folder (see "Finding or defini
 ### Deciding which one to create or work on
 
 1. **Identify the product** the user is talking about (ask if unclear).
-2. **Look for an existing main canvas** for that product (`main-lean-product-canvas <Product>.md` or `.canvas`) in the boards folder.
+2. **Look for an existing main canvas** for that product (`main-lean-product-canvas <Product>.md` or `.canvas`) in the boards folder (a canvas moved into an MVP folder counts, see "Creating an MVP").
    - **Not found** → this is the first canvas for this product. It becomes the **main canvas**.
    - **Found** → the main canvas already exists.
      - If the user is explicitly asking to revisit/review the main canvas itself, work on that file.
@@ -69,7 +69,7 @@ Main and problem canvases live in the same boards folder (see "Finding or defini
 
 This skill doesn't assume any fixed folder structure — it adapts to whatever project it's used in:
 
-1. **Look for a folder already in use.** Before asking anything, search the current project for existing files matching `main-lean-product-canvas *.md` / `.canvas` or `lean-product-canvas-*.md` / `.canvas` (e.g. with `find . \( -iname "main-lean-product-canvas *.md" -o -iname "lean-product-canvas-*.md" -o -iname "main-lean-product-canvas *.canvas" -o -iname "lean-product-canvas-*.canvas" \)`). If you find any, the folder containing them is the boards folder — use it without asking again. This makes the folder choice persist automatically once a project has used the skill before.
+1. **Look for a folder already in use.** Before asking anything, search the current project for existing files matching `main-lean-product-canvas *.md` / `.canvas` or `lean-product-canvas-*.md` / `.canvas` (e.g. with `find . \( -iname "main-lean-product-canvas *.md" -o -iname "lean-product-canvas-*.md" -o -iname "main-lean-product-canvas *.canvas" -o -iname "lean-product-canvas-*.canvas" \)`). If you find any, the folder containing them is the boards folder — use it without asking again. The exception: a canvas that was moved into an MVP folder (`<boards folder>/MVPs/#N-…/`, see "Creating an MVP") still belongs to the boards folder that contains `MVPs/`, so when a match sits inside an `MVPs/#N-…/` folder, the boards folder is the parent of `MVPs/`, not the MVP folder. This makes the folder choice persist automatically once a project has used the skill before.
 2. **If none is found** (first use of the skill in this project), ask the user which folder to save this project's canvas files in (suggest `Lean Product Canvas Boards/` as a default if they have no preference). Create the folder if it doesn't exist.
 
 The problems folder lives inside the boards folder (e.g. `Products/Acme/Problems/`). Its name follows the output-language rule and is the translation of "Problems" (English: `Problems`, Spanish: `Problemas`, Portuguese: `Problemas`, French: `Problèmes`, …). Because the language can differ between sessions, **look for an existing problems folder before creating one**: any subfolder of the boards folder whose files have `type: problem` in their frontmatter, whatever language its name is in, is the problems folder — reuse it as-is and never create a second one or rename it. Only when there's none, create it with the name in the current output language, and do it the first time a problem is saved.
@@ -258,23 +258,23 @@ An MVP is the concrete execution of the experiment described in a canvas's **Box
 
 ### Where MVPs live
 
-One shared `MVPs/` folder per product, as a sibling of the canvas files inside that product's boards folder (e.g. `Products/Acheev/MVPs/`). All MVPs for that product live here regardless of which canvas (main or a specific problem canvas) they came from — the MVP's `Summary.md` records which source canvas/box it came from, so that link isn't lost. Create the `MVPs/` folder the first time an MVP is created for that product.
+One shared `MVPs/` folder per product, inside that product's boards folder (e.g. `Products/Acheev/MVPs/`). All MVPs for that product live here regardless of which canvas (main or a specific problem canvas) they came from. A canvas that hasn't spawned an MVP stays in the boards folder itself; once it spawns one, the canvas lives inside that MVP's folder (see "Moving the canvas into the MVP"). The MVP's `Summary.md` also records which source canvas/box it came from. Create the `MVPs/` folder the first time an MVP is created for that product.
 
 ### Folder naming
 
 `#<N>-<Kebab-Case-Name>` — e.g. `#1-AI-Powered-Product-Matching-Engine-can-accurately-identify`.
 
 - **`<N>`:** the next sequential integer across the whole `MVPs/` folder. Scan existing subfolders for the current highest `#N-` prefix and increment by 1 (start at `1` if `MVPs/` doesn't exist yet or is empty).
-- **`<Kebab-Case-Name>`:** derived from the source canvas's Box 7 text — strip a leading framing phrase ("Whether ", "Whether the "), keep the first natural clause (up to the first comma, em-dash, or parenthetical aside), preserve the original word casing, and join words with hyphens instead of spaces. **Always show the derived name to the user before creating the folder** so they can adjust it — never create it silently with a name they haven't seen and approved.
+- **`<Kebab-Case-Name>`:** derived from the source canvas's Box 7 text — strip a leading framing phrase ("Whether ", "Whether the "), keep the first natural clause (up to the first comma, em-dash, or parenthetical aside), preserve the original word casing, and join words with hyphens instead of spaces. **Always show the derived name to the user before creating the folder** so they can adjust it — never create it silently with a name they haven't seen and approved. In the same message, tell them that the canvas files will move into that folder.
 
 ### Contents
 
-Inside the new MVP folder, create exactly one file, `Summary.md`, containing the Box 7 and Box 8 content of the source canvas as of that moment, verbatim (if the canvas exists only as a `.canvas`, read the boxes by converting it with `to-md` into a scratch directory), each under its own heading, plus a link back to the source canvas file:
+Inside the new MVP folder, create `Summary.md`, containing the Box 7 and Box 8 content of the source canvas as of that moment, verbatim (if the canvas exists only as a `.canvas`, read the boxes by converting it with `to-md` into a scratch directory), each under its own heading, plus a link back to the source canvas. It is a snapshot: it keeps the boxes as of that moment and is not updated if the canvas changes later.
 
 ```markdown
 # MVP #<N> — <Name>
 
-Source: [[<path to source canvas file>]]
+Source: [[<source canvas base name>]]
 
 ## Most Important Thing to Learn
 <verbatim Box 7 content from the source canvas>
@@ -283,12 +283,23 @@ Source: [[<path to source canvas file>]]
 <verbatim Box 8 content from the source canvas>
 ```
 
-Don't create any other file (no `Final Report.md`, no results template, no `_Pending_` scaffolding) — those are written later by whoever actually runs the experiment. This skill only scaffolds the starting point.
+The link is by name, not by path, so it keeps working wherever the canvas lives. Besides `Summary.md` and the moved canvas files (next section), don't create any other file (no `Final Report.md`, no results template, no `_Pending_` scaffolding) — those are written later by whoever actually runs the experiment. This skill only scaffolds the starting point.
+
+### Moving the canvas into the MVP
+
+Whenever an MVP is created, the source canvas **moves into the MVP's folder**, so the experiment travels with the canvas it came from. It applies to main canvases and problem canvases alike.
+
+1. **What moves:** every file of that canvas that exists: `<name>.md`, `<name>.canvas`, or both (Both mode), keeping their names. The problem record, if the canvas came from one, never moves: it stays in the problems folder, and its `canvas:` link is by name, so it still resolves.
+2. **How:** once the folder exists, `Summary.md` is written and the name was approved, move the files with `mv`. It's a move, not a copy, so there is still a single version of the canvas. If a file with that name already exists in the MVP folder, stop and ask.
+3. **Fix path links:** moving files outside Obsidian doesn't update links. Before moving, search the project for wikilinks that point to the canvas by path (anything like `[[<folders>/<name>`); after moving, rewrite them to the new location. Links by name keep working and are left alone. Tell the user what you changed.
+4. **The canvas stays editable there:** later work on its boxes (a pending box, a hand edit, converting between Markdown and Canvas) happens on the moved files, which are found through the rule in "Finding or defining the boards folder".
+5. **A second MVP from the same canvas:** if the source canvas already lives inside an MVP folder, don't move it again silently. Ask which of these they want and do exactly that: move it to the new MVP; copy it, so each MVP keeps its own copy and the original stays; or leave it where it is and only link to it from the new `Summary.md`.
+6. **Report** the new location of the canvas files and which links were updated.
 
 ### Trigger
 
 - On explicit request ("create an MVP", "let's run an experiment for this", "spin up an MVP from box 8").
-- Also offer it as an option right after Box 8 is saved/confirmed for any canvas (main or problem), alongside the existing suggestion to seed a new problem canvas — see step 9 of "General flow" below.
+- Also offer it as an option right after Box 8 is saved/confirmed for any canvas (main or problem), alongside the existing suggestion to seed a new problem canvas — see step 9 of "General flow" below. When you offer it, mention that creating an MVP also moves the canvas into the new folder.
 
 ## General flow
 
@@ -305,7 +316,7 @@ Don't create any other file (no `Final Report.md`, no results template, no `_Pen
 6. **Execute the mode**, following the corresponding prompt's instructions to the letter (see "How to execute each mode").
 7. **Offer to save the summary.** When the user reaches a result they're satisfied with for that box (typically after Generate+Select, or after incorporating Review feedback), draft a concise summary and show it to them before writing it to the file.
 8. **Save with confirmation.** If the box already has content other than `_Pending_` in the file, show the old summary next to the new one and explicitly ask whether to confirm the replacement before overwriting. Never overwrite silently. Saving follows the canvas's output format: in Both mode, check `compare` first and regenerate the canvas after saving; in Canvas mode, go through the working copy (see "Output format: Markdown, Canvas, or both").
-9. **Suggest the next step.** After saving, indicate which box is next pending, leaving it open for the user to choose a different one. If Box 8 just got filled in (main canvas or problem canvas), suggest its output as the natural starting point for either a new problem canvas (if the experiment needs its own full canvas) or, more directly, an MVP folder (see "Creating an MVP" above) — whichever fits the scope of the experiment.
+9. **Suggest the next step.** After saving, indicate which box is next pending, leaving it open for the user to choose a different one. If Box 8 just got filled in (main canvas or problem canvas), suggest its output as the natural starting point for either a new problem canvas (if the experiment needs its own full canvas) or, more directly, an MVP folder (see "Creating an MVP" above; it also moves the canvas into the new folder) — whichever fits the scope of the experiment.
 
 ### Detecting the requested mode
 

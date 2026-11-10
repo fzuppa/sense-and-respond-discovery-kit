@@ -92,7 +92,9 @@ Always a Business Problem Statement — records are for products that already ex
 
 ## MVPs (running an experiment)
 
-Once a canvas's Box 8 (Least Amount of Work to Learn It) is filled in, you can ask Claude to turn it into an **MVP** — a folder that tracks the actual execution of that experiment. MVPs live in a shared `MVPs/` folder next to the canvas files (e.g. `Products/Acme/MVPs/`), numbered sequentially and named after the risk they test, e.g. `MVPs/#1-Some-Risk-From-Box-7/`. Each MVP folder starts with a single `Summary.md` recording the source canvas's Box 7 (what to learn) and Box 8 (how) — later, whoever runs the experiment adds their own results file. See `SKILL.md` → "Creating an MVP" for the exact naming/derivation rules.
+Once a canvas's Box 8 (Least Amount of Work to Learn It) is filled in, you can ask Claude to turn it into an **MVP** — a folder that tracks the actual execution of that experiment. MVPs live in a shared `MVPs/` folder inside the product's boards folder (e.g. `Products/Acme/MVPs/`), numbered sequentially and named after the risk they test, e.g. `MVPs/#1-Some-Risk-From-Box-7/`. Each MVP folder starts with a `Summary.md` recording the source canvas's Box 7 (what to learn) and Box 8 (how) — later, whoever runs the experiment adds their own results file. See `SKILL.md` → "Creating an MVP" for the exact naming/derivation rules.
+
+**The canvas moves into the MVP.** Whenever an MVP is created, the source canvas (the `.md`, the `.canvas`, or both) is moved into the MVP's folder, so the experiment travels with the canvas it came from. Claude tells you before doing it, along with the folder name. Links by name keep working and links by path are rewritten. The problem record, if the canvas came from one, stays where it is. If a second MVP comes from a canvas that already lives in an MVP folder, Claude asks whether to move it again, copy it, or just link to it. The canvas stays editable in its new place and the skill still finds it. `Summary.md` is a snapshot of Boxes 7 and 8 at that moment.
 
 ## Language
 
