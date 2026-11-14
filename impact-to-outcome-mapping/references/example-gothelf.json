@@ -1,0 +1,22 @@
+{
+  "nodes": [
+    {"id": "i1", "type": "impact", "text": "Revenue"},
+    {"id": "i2", "type": "impact", "text": "Profit Margin"},
+
+    {"id": "l1", "type": "lagging", "text": "Customer adds item to cart", "feeds": ["i1"]},
+    {"id": "l2", "type": "lagging", "text": "Customer renews annual membership", "feeds": ["i1"]},
+    {"id": "l3", "type": "lagging", "text": "Referred customer creates account", "feeds": ["i2"]},
+    {"id": "l4", "type": "lagging", "text": "Referred customer puts item in cart", "feeds": ["i2"]},
+
+    {"id": "e1", "type": "leading", "text": "Customer views product page", "feeds": ["l1"]},
+    {"id": "e2", "type": "leading", "text": "Customer clicks related item link", "feeds": ["l1"]},
+    {"id": "e3", "type": "leading", "text": "Customer views renewal offers", "feeds": ["l2"]},
+    {"id": "e4", "type": "leading", "text": "Customer arrives via referral link", "feeds": ["l3", "l4"]},
+
+    {"id": "e5", "type": "leading", "text": "Customer logs in", "feeds": ["e1"]},
+    {"id": "e6", "type": "leading", "text": "Customer clicks referral link", "feeds": ["e1"]},
+    {"id": "e7", "type": "leading", "text": "Customer clicks renewal email link", "feeds": ["e3"]},
+    {"id": "e8", "type": "leading", "text": "Customer shares referral link", "feeds": ["e4"]}
+  ],
+  "related": [["e1", "e2"]]
+}

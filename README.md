@@ -9,6 +9,8 @@ A set of Claude Code skills/commands for running Product Discovery using the [Se
 - **[founding-hypothesis](founding-hypothesis/)** — writes, selects between approaches for, and reviews a Founding Hypothesis (Jake Knapp & John Zeratsky, Foundation Sprint): "If we help [customer] solve [problem] with [approach], they will choose us over [competitors] because our solution is [differentiators]". Another way to describe an opportunity, strongest on competition and differentiation. Includes the Magic Lenses to compare approaches, an assumption scorecard, and a worked Spotify example. Ships as an auto-triggered Skill.
 - **[friction-map-canvas](friction-map-canvas/)** — turns a saved Cognitive Friction Map (MFC, from `/afpm:map-frictions` or any map in the `cognitive-frictions` format) into an Obsidian canvas: the journey as a flow, grouped into phases, with each step's friction colored by severity, the ranked opportunities and a link back to the `.md`. Meant to run by itself as the last step of a friction mapping. Ships as an auto-triggered Skill with a small Python layout script (standard library only).
 
+- **[impact-to-outcome-mapping](impact-to-outcome-mapping/)** — builds an Impact-to-Outcome map (Gothelf & Seiden) through guided questions: impact metrics, then the lagging outcomes behind each, then the leading outcomes behind each of those (chains allowed), with suggestions offered at the outcome levels and a metric (optionally baseline → target) at every level. Saved as an Obsidian canvas laid out like [Gothelf's diagram](https://jeffgothelf.com/blog/why-you-should-map-outcomes-to-impact-metrics/), and readable back to extend or review the map. Can start from Box 2 of a Lean Product Canvas. Ships as an auto-triggered Skill with a small Python layout script (standard library only).
+
 Each skill/command lives in its own self-contained folder and can be installed independently — see that folder's own README for install instructions.
 
 ## Quick install
@@ -20,6 +22,7 @@ npx skills add fzuppa/sense-and-respond-discovery-kit/lean-product-canvas
 npx skills add fzuppa/sense-and-respond-discovery-kit/founding-hypothesis
 npx skills add fzuppa/sense-and-respond-discovery-kit/market-research
 npx skills add fzuppa/sense-and-respond-discovery-kit/friction-map-canvas
+npx skills add fzuppa/sense-and-respond-discovery-kit/impact-to-outcome-mapping
 ```
 
 `npx skills add` installs the skill content (`SKILL.md` + `references/`) but not slash commands — commands are a separate registry in Claude Code. `lean-product-canvas` and `founding-hypothesis` don't need one (they're auto-triggered). See the `market-research` README for the copy step needed if you want the `/market-research` command.
@@ -43,6 +46,8 @@ The kit's own instructions (this README, `SKILL.md` files, prompt references, co
 Alternatively, or in addition, describe the opportunity with a Founding Hypothesis (`help me write the founding hypothesis for <product>`) when the key question is *why customers would choose you over the alternatives*. If Box 1 uses the Business Opportunity Statement, its competitive clause can be carried into the canvas.
 
 Once you have a journey and want to see where AI could add value in it, map its cognitive frictions with `/afpm:map-frictions`; `friction-map-canvas` then draws the saved map as a canvas.
+
+Once the business outcomes (Box 2) are clear, map them to the customer behaviors that should move them with the impact-to-outcome-mapping skill (`help me map outcomes to impact metrics for <product>`); Box 2 can be the starting list of impact metrics.
 
 Nothing enforces this order — each skill can be used standalone.
 
